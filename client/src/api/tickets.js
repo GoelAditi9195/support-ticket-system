@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:4000/api/tickets';
+const BASE_URL = `${import.meta.env.VITE_API_URL}/api/tickets`;
 
 async function request(url, options) {
   let res;
