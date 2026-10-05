@@ -56,7 +56,7 @@ function TicketListPage() {
   return (
     <div>
        <SummaryCards />
-      <div>
+      <div className="filters">
         <input
           type="text"
           placeholder="Search by title or email"
@@ -87,15 +87,50 @@ function TicketListPage() {
 
       {!loading && !error && tickets.length > 0 && (
         <>
-          <ul>
-            {tickets.map((ticket) => (
-              <li key={ticket.id}>
-                <Link to={`/tickets/${ticket.id}`}>{ticket.title}</Link>
-                {' | '}
-                {ticket.customerEmail} | {ticket.priority} | {ticket.status}
-              </li>
-            ))}
-          </ul>
+          <div className="table-wrap">
+  <table className="tickets">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Customer</th>
+        <th>Priority</th>
+        <th>Status</th>
+        <th>Created</th>
+      </tr>
+    </thead>
+    <tbody>
+      {tickets.map((ticket) => (
+        <tr key={ticket.id}>
+          <td className="muted">#{ticket.id}</td>
+          <td>
+            <Link to={`/tickets/${ticket.id}`}>{ticket.title}</Link>
+          </td>
+          <td className="muted">{ticket.customerEmail}</td>
+          <td>
+            <span className={`badge priority-${ticket.priority.toLowerCase()}`}>
+              {ticket.priority}
+            </span>
+          </td>
+          <td>
+            <span
+              className={`badge status-${ticket.status.toLowerCase().replace(' ', '-')}`}
+            >
+              {ticket.status}
+            </span>
+          </td>
+          <td className="muted">
+            {new Date(ticket.createdAt).toLocaleDateString(undefined, {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric',
+            })}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
 
           <div>
             <button

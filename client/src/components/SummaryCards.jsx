@@ -14,15 +14,21 @@ function SummaryCards() {
   if (error) return <p>Could not load summary: {error}</p>;
   if (!summary) return <p>Loading summary...</p>;
 
+   const cards = [
+    { label: 'Total tickets', value: summary.total, tone: 'total' },
+    { label: 'Open', value: summary.Open, tone: 'open' },
+    { label: 'In Progress', value: summary['In Progress'], tone: 'progress' },
+    { label: 'Resolved', value: summary.Resolved, tone: 'resolved' },
+  ];
+
   return (
-    <div>
-      <span>Total: {summary.total}</span>
-      {' | '}
-      <span>Open: {summary.Open}</span>
-      {' | '}
-      <span>In Progress: {summary['In Progress']}</span>
-      {' | '}
-      <span>Resolved: {summary.Resolved}</span>
+    <div className="summary">
+      {cards.map((card) => (
+        <div className={`summary-card tone-${card.tone}`} key={card.label}>
+          <span className="summary-label">{card.label}</span>
+          <span className="summary-number">{card.value}</span>
+        </div>
+      ))}
     </div>
   );
 }
