@@ -1,4 +1,5 @@
-import { Ticket } from '../models/ticket.js';
+import { Op } from 'sequelize';
+import { Ticket, STATUSES, PRIORITIES } from '../models/ticket.js';
 import {
   validateCreateTicket,
   validateUpdateTicket,
@@ -31,7 +32,25 @@ export async function getTickets(req, res, next) {
     const limit = 10;
     const sort = req.query.sort === 'oldest' ? 'ASC' : 'DESC';
 
+    const where = {};
+
+    if (STATUSES.includes(req.query.status)) {
+      where.status = req.query.status;
+    }
+    if (PRIORITIES.includes(req.query.priority)) {
+      where.priority = req.query.priority;
+    }
+
+    const search = (req.query.search || '').trim();
+    if (search) {
+      where[Op.or] = [
+        { title: { [Op.like]: `%${search}%` } },
+        { customerEmail: { [Op.like]: `%${search}%` } },
+      ];
+    }
+
     const { count, rows } = await Ticket.findAndCountAll({
+      where,
       order: [['createdAt', sort]],
       limit,
       offset: (page - 1) * limit,
